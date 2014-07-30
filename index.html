@@ -2,9 +2,9 @@
 <html>
 
   <head>
-    <meta charset='utf-8' />
-    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <meta name="description" content="iOSLinkedInTokenAuthorizer : An Obj-C class for LinkedIn OAuth2 token management, with user-interactionless token refreshing" />
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="iOSLinkedInTokenAuthorizer : An Obj-C class for LinkedIn OAuth2 token management, with user-interactionless token refreshing">
 
     <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
 
@@ -31,37 +31,67 @@
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
-        <h3>
-<a name="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages"><span class="octicon octicon-link"></span></a>Welcome to GitHub Pages.</h3>
+        <h1>
+<a name="ioslinkedintokenauthorizer" class="anchor" href="#ioslinkedintokenauthorizer"><span class="octicon octicon-link"></span></a>iOSLinkedInTokenAuthorizer</h1>
 
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
+<p>iOSLinkedInTokenAuthorizer is a small Objective-C helper class for LinkedIn App authentication and OAuth 2 token refreshing. It relies on jeyben's awesome  <a href="https://github.com/jeyben/IOSLinkedInAPI">iOSLinkedInAPI</a>, while adding functionality "set it and forget it" token authentication, allowing for OAuth2 token refreshing that doesn't require user interaction to refresh non-expired tokens. </p>
 
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
-</code></pre>
+<h2>
+<a name="installation--basic-usage" class="anchor" href="#installation--basic-usage"><span class="octicon octicon-link"></span></a>Installation &amp; basic usage</h2>
 
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
+<ul>
+<li>Drag the <code>iOSLinkedInTokenAuthorizer/iOSLinkedInTokenAuthorizer</code> folder into your project.</li>
+<li>Add <a href="https://github.com/jeyben/IOSLinkedInAPI">iOSLinkedInAPI</a> and <a href="https://github.com/AFNetworking/AFNetworking">AFNetworking</a> to your project.</li>
+<li>Input your LinkedIn app's information into the appropriate constants in <code>LTAlinkedInTokenHandler.m</code>.
+<p align="center"><img src="http://i.imgur.com/T3BRLia.png"></p>
+</li>
+<li>
+<code>#import "LTAlinkedInTokenHandler.h"</code> into the view controllers you want to manage the LinkedIn authorization process and into any where you want to call the the token refresh method. </li>
+<li>Set cookie accept policy to 'always' by calling <code>[[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookieAcceptPolicy:NSHTTPCookieAcceptPolicyAlways]</code> before calling <code>loginToLinkedIn:</code> (you can change the accept policy back to whatever you'd like after the first LinkedIn login process completes. You will need to set it to 'always' before calling the <code>authorizeApp:</code> method, but, again, you can change it to whatever you'd like after the method completes).</li>
+</ul><h2>
+<a name="how-to-use" class="anchor" href="#how-to-use"><span class="octicon octicon-link"></span></a>How to use</h2>
 
-<h3>
-<a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>Designer Templates</h3>
+<p>See sample project in <code>/iOSLinkedInTokenAuthorizerExample</code>.</p>
 
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
-
-<h3>
-<a name="rather-drive-stick" class="anchor" href="#rather-drive-stick"><span class="octicon octicon-link"></span></a>Rather Drive Stick?</h3>
-
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
-
-<h3>
-<a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
-
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
+<h2>
+<a name="notes" class="anchor" href="#notes"><span class="octicon octicon-link"></span></a>Notes</h2>
 
 <h3>
-<a name="support-or-contact" class="anchor" href="#support-or-contact"><span class="octicon octicon-link"></span></a>Support or Contact</h3>
+<a name="the-linkedin-authentication-flow-" class="anchor" href="#the-linkedin-authentication-flow-"><span class="octicon octicon-link"></span></a>The LinkedIn Authentication Flow ...</h3>
 
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
+<p>LinkedIn doesn't provide an explicit token refresh call, rather, when making an app authentication call, there's a check to see if:
+1) The user is logged in to LinkedIn.
+2) The user has an existing, unexpired token. </p>
+
+<p>If both requirements are met, the token is refreshed without any interaction on the user's part. 
+If one or both requirements are not met, the user is taken to LinkedIn's app authentication login page to allow the user to authorize the app, and, in doing so, obtain an OAuth 2 token.  </p>
+
+<h3>
+<a name="-and-an-inherent-difficulty-for-ios-apps-needing-to-utilize-linkedins-api-without-requiring-the-user-to-re-authenticate-the-app-after-60-days-that-ioslinkedintokenauthorizer-attempts-to-solve" class="anchor" href="#-and-an-inherent-difficulty-for-ios-apps-needing-to-utilize-linkedins-api-without-requiring-the-user-to-re-authenticate-the-app-after-60-days-that-ioslinkedintokenauthorizer-attempts-to-solve"><span class="octicon octicon-link"></span></a>... and an inherent difficulty for iOS apps needing to utilize LinkedIn's API without requiring the user to re-authenticate the app after 60 days (that iOSLinkedInTokenAuthorizer attempts to solve)</h3>
+
+<p>After going through the initial authorization flow on an iOS device, the user gets their token, which satisfies requirement 2 when a subsequent authorization call is made with 60 days of token creation, however, a login session cookie is never exchanged during the initial authentication. Because of this, the user is sent to the app authorization login screen again.</p>
+
+<p>iOSLinkedInTokenAuthorizer provides the missing step needed to generate the login session cookie, and then capture it so your app can use it for subsequent calls to refresh a user's token. </p>
+
+<p>Unfortunately, for that session cookie to be generated and captured, an initial LinkedIn login has to be completed. After that, then the authentication call is made to generate a token. What that boils down to is the user has to log in twice. After that, as long as the user opens your app within 60 days (and you provide a call to the <code>authorizeApp:</code> method before 60 days is up), the token can be refreshed in the background without them having to be sent to a LinkedIn login screen again. </p>
+
+<h2>
+<a name="tips" class="anchor" href="#tips"><span class="octicon octicon-link"></span></a>Tips</h2>
+
+<ul>
+<li><p>Add an alertView or some other popup or label prior to the user's initial login to alert them to the process. Something with a message along the lines of "For   to work, please log in to your LinkedIn Account." Then, when the LinkeIn's "login to authenticate" screen appears, display another alertView with a message along the lines of "Please authenticate  to authorize it to access your LinkedIn account." Basically some sort of indicator that the two login methods are necessary, and are not a mistake. </p></li>
+<li><p>When refreshing a token using the <code>authorizeApp:</code> method, the <code>iOSLinkedInAPI "LIALinkedInAuthorizationViewController"</code> will attempt to display a webView for the authentication flow, which it will quickly show the navigation bar, then quickly dismiss. Since this is code that pertains to <code>iOSLinkedInAPI</code>, I have not modified the behavior in this public library, but you can modify <code>LIALinkedInAuthorizationViewController.m</code> to add a check along the lines of 
+<code>if ([]LTAlinkedInTokenHandler hasSessionCookie] &amp;&amp; [][NSUserDefaults NSstandardUserDefaults] objectForKey:@"linkedin_token]")</code>
+and suppress the webView there.</p></li>
+</ul><h2>
+<a name="thanks" class="anchor" href="#thanks"><span class="octicon octicon-link"></span></a>Thanks</h2>
+
+<ul>
+<li>
+<a href="https://github.com/jeyben">jeyben</a> and his <a href="https://github.com/jeyben/IOSLinkedInAPI">iOSLinkedInAPI library</a>.</li>
+<li>
+<a href="http://nshipster.com">Mattt Thompson</a> and his always invaluable <a href="http://afnetworking.com">AFNetworking library</a>.</li>
+</ul>
       </section>
     </div>
 
